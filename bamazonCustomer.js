@@ -18,6 +18,7 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     logValues();
+    // connection.end();
 });
 
 function logValues(){
@@ -35,7 +36,7 @@ function logValues(){
 
 function promptUser() {
     connection.query("Select * from products", function(err, res) {
-         if(err) throw err;
+        if(err) throw err;
         inquirer.prompt([
             {
                 name: "id",
@@ -53,7 +54,9 @@ function promptUser() {
             if(res[itemIndex].stock_quantity > answers.quant){
                 var stockCredit = res[itemIndex].stock_quantity - answers.quant;
                 stockReset(stockCredit, answers.id);
+                
                 console.log("Total: $" + total);
+                console.log(stockCredit);
             }
             else{
                 console.log("Insufficient Stock!");
@@ -64,19 +67,16 @@ function promptUser() {
 
     });
     
-    connection.end();
+    
 };
 
 function stockReset(newStock, id) {
     // console.log(newStock);
-    connection.query("UPDATE products SET ? WHERE ?",
-    [{
-        stock_quantity: newStock
-    }, {
-        item_id: id
-    }],
+    var queryString = "UPDATE products SET stock_quantity =" + newStock + " WHERE item_id=" + id;
+    connection.query(queryString,
     function(err, res) {
 
         console.log("Stock Updated");
+        connection.end();
     });
 };
