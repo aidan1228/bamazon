@@ -120,7 +120,7 @@ function addProduct() {
             type: "list",
             name: "department",
             message: "Please select department for new product: ",
-            choices: ["Jewelry & Accesories", "Home & Kitchen", "Musical Instruments", "Tools & Hardware", "Cell Phones"]
+            choices: ["Jewelry & Accesories", "Home & Kitchen", "Musical Instruments", "Tools & Hardware", "Cell Phones", "Beauty and Health"]
         },
         {
             name: "price",

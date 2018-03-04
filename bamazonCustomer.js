@@ -51,12 +51,14 @@ function promptUser() {
 
             var itemIndex = answers.id - 1;
             var total = res[itemIndex].price * answers.quant;
+            var productSales = res[itemIndex].product_sales + total;
+            
             if(res[itemIndex].stock_quantity > answers.quant){
                 var stockCredit = res[itemIndex].stock_quantity - answers.quant;
-                stockReset(stockCredit, answers.id);
+                stockReset(stockCredit, answers.id, productSales);
                 
                 console.log("Total: $" + total);
-                console.log(stockCredit);
+                console.log(productSales);
             }
             else{
                 console.log("Insufficient Stock!");
@@ -70,10 +72,17 @@ function promptUser() {
     
 };
 
-function stockReset(newStock, id) {
+function stockReset(newStock, id, salesTotal) {
     // console.log(newStock);
-    var queryString = "UPDATE products SET stock_quantity =" + newStock + " WHERE item_id=" + id;
-    connection.query(queryString,
+     
+    connection.query("UPDATE products SET ? WHERE ?",
+    [{
+        stock_quantity: newStock,
+        product_sales: salesTotal
+
+    }, {
+        item_id: id
+    }],
     function(err, res) {
 
         console.log("Stock Updated");
